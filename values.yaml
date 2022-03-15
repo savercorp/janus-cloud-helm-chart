@@ -1,0 +1,13 @@
+janus_proxy:
+  host: example.com
+  image:
+    repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-proxy
+    tag: latest
+  ingress:
+    annotations: {}
+  service:
+    annotations: {}
+janus_gateway:
+  image:
+    repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-gateway
+    tag: latest
