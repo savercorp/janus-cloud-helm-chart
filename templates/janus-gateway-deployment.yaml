@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: janus-gateway
+spec:
+  selector:
+    matchLabels:
+      app: janus-gateway
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: janus-gateway
+    spec:
+      containers:
+        - image: "{{ .Values.janus_gateway.image.repository }}:{{ .Values.janus_gateway.image.tag }}"
+          imagePullPolicy: Always
+          name: janus-gateway
+          resources:
+            requests:
+              cpu: 4
+              memory: 8G
+          ports:
+            - containerPort: 8200
+            - containerPort: 8188
+          volumeMounts:
+            - name: janus-sentinel
+              mountPath: /opt/janus-cloud/conf/janus-sentinel.yml
+              subPath: janus-sentinel.yml
+            - name: janus
+              mountPath: /opt/janus/etc/janus/janus.jcfg
+              subPath: janus.jcfg
+      volumes:
+        - name: janus-sentinel
+          configMap:
+            name: janus-gateway
+            items:
+              - key: janus-sentinel.yml
+                path: janus-sentinel.yml
+        - name: janus
+          configMap:
+            name: janus-gateway
+            items:
+              - key: janus.jcfg
+                path: janus.jcfg

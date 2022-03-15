@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: janus-proxy
+spec:
+  selector:
+    matchLabels:
+      app: janus-proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: janus-proxy
+    spec:
+      containers:
+        - image: "{{ .Values.janus_proxy.image.repository }}:{{ .Values.janus_proxy.image.tag }}"
+          imagePullPolicy: Always
+          name: janus-proxy
+          resources:
+            requests:
+              cpu: 2
+              memory: 4G
+          ports:
+            - containerPort: 8288
+            - containerPort: 8100
+          volumeMounts:
+            - name: janus-proxy
+              mountPath: /opt/janus-cloud/conf
+      volumes:
+        - name: janus-proxy
+          configMap:
+            name: janus-proxy

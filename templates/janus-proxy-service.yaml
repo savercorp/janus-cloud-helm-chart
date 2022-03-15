@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: janus-proxy
+  {{- with .Values.janus_proxy.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: NodePort
+  ports:
+    - name: ws
+      port: 80
+      targetPort: 8288
+      protocol: TCP
+    - name: wss
+      port: 443
+      targetPort: 8288
+      protocol: TCP
+    - name: pong
+      port: 8100
+      targetPort: 8100
+      protocol: TCP
+  selector:
+    app: janus-proxy
