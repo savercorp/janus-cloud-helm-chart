@@ -75,7 +75,7 @@ data:
     # plugin_module_path(e.g. januscloud.plugins.echotest):plugin_fatory_name
     plugins:
       {{- range .Values.janusProxy.plugins }}
-      - janus-proxy.plugin.{{ .name | lower }}:{{ .name }}.yml:
+      - januscloud.proxy.plugin.{{ .name | lower }}:{{ .name }}Plugin
       {{- end }}
 
     # Configuration for the websocket transport.
