@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: coturn
-  replicas: 3
+  replicas: {{ .Values.coturn.replicas }}
   template:
     metadata:
       labels:
