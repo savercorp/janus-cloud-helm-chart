@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coturn
+spec:
+  selector:
+    matchLabels:
+      app: coturn
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: coturn
+    spec:
+      #hostNetwork: true
+      containers:
+        - image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
+          imagePullPolicy: {{ .Values.coturn.image.pullPolicy }}
+          name: coturn
+          resources:
+            requests:
+              cpu: 2
+              memory: 4G
+          ports:
+            - containerPort: 443
+              protocol: UDP
+          volumeMounts:
+            - mountPath: /usr/local/etc/
+              name: coturn
+      volumes:
+        - name: coturn
+          configMap:
+            name: coturn
+            items:
+              - key: turnserver.conf
+                path: turnserver.conf

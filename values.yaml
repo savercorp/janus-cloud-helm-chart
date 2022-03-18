@@ -1,13 +1,60 @@
-janus_proxy:
+janusProxy:
   host: example.com
-  image:
-    repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-proxy
-    tag: latest
   ingress:
     annotations: {}
   service:
     annotations: {}
-janus_gateway:
+  image:
+    repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-proxy
+    tag: latest
+    pullPolicy: Always
+  port: 443
+  plugins:
+    - name: EchoTest # plugin_fatory_name
+      config:
+        general: {}
+    - name: P2PCall
+      config:
+        general:
+          user_db: memory # "memory" is only supported
+    - name: VideoCall
+      config:
+        general:
+          user_db: memory # "memory" or "redis://user:secret@localhost:6379/0"
+    - name: VideoRoom
+      config:
+        general:
+          room_db: memory # "memory" or "redis://user:secret@localhost:6379/0"
+          room_auto_destroy_timeout: 5000 # if not zero, the idle room would be destroyed automatically
+          admin_key: ''
+          lock_rtp_forward: false
+        backend_sweeper:
+          enable: true
+          backend_idle_room_check_interval: 600
+        rooms:
+          - room_id: 1234
+            description: Demo Room
+            secret: adminpwd
+            publishers: 6
+            bitrate: 128000
+            fir_freq: 10
+            videocodec: vp8
+            record: false
+janusGateway:
+  replicas: 3
   image:
     repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-gateway
     tag: latest
+    pullPolicy: Always
+coturn:
+  replicas: 3
+  service:
+    annotations: {}
+  image:
+    repository: coturn/coturn
+    tag: latest
+    pullPolicy: Always
+  user:
+    name: user
+    password: password
+  realm: '' # turn:example.com:443

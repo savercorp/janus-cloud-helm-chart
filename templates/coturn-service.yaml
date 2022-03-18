@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: coturn
+  {{- with .Values.coturn.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ports:
+    - port: 443
+      targetPort: 443
+      protocol: UDP
+  type: LoadBalancer
+  selector:
+    app: coturn

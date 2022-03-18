@@ -2,13 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: janus-proxy
-  {{- with .Values.janus_proxy.ingress.annotations }}
+  {{- with .Values.janusProxy.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   rules:
-    - host: {{ .Values.janus_proxy.host }}
+    - host: {{ .Values.janusProxy.host }}
       http:
         paths:
           - path: /

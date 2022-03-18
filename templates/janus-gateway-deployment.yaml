@@ -6,15 +6,15 @@ spec:
   selector:
     matchLabels:
       app: janus-gateway
-  replicas: 3
+  replicas: {{ .Values.janusGateway.replicas }}
   template:
     metadata:
       labels:
         app: janus-gateway
     spec:
       containers:
-        - image: "{{ .Values.janus_gateway.image.repository }}:{{ .Values.janus_gateway.image.tag }}"
-          imagePullPolicy: Always
+        - image: "{{ .Values.janusGateway.image.repository }}:{{ .Values.janusGateway.image.tag }}"
+          imagePullPolicy: {{ .Values.janusGateway.image.pullPolicy }}
           name: janus-gateway
           resources:
             requests:

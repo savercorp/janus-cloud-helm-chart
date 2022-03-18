@@ -13,8 +13,8 @@ spec:
         app: janus-proxy
     spec:
       containers:
-        - image: "{{ .Values.janus_proxy.image.repository }}:{{ .Values.janus_proxy.image.tag }}"
-          imagePullPolicy: Always
+        - image: "{{ .Values.janusProxy.image.repository }}:{{ .Values.janusProxy.image.tag }}"
+          imagePullPolicy: {{ .Values.janusProxy.image.pullPolicy }}
           name: janus-proxy
           resources:
             requests:
