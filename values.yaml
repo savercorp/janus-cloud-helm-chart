@@ -1,9 +1,7 @@
 janusProxy:
   host: example.com
   ingress:
-    annotations: {}
-  service:
-    annotations: {}
+    annotations: {} # ALB info
   image:
     repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-proxy
     tag: latest
@@ -49,7 +47,7 @@ janusGateway:
 coturn:
   replicas: 3
   service:
-    annotations: {}
+    annotations: {} # NLB info
   image:
     repository: coturn/coturn
     tag: latest
