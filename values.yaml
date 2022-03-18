@@ -46,3 +46,15 @@ janusGateway:
     repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-gateway
     tag: latest
     pullPolicy: Always
+coturn:
+  replicas: 3
+  service:
+    annotations: {}
+  image:
+    repository: coturn/coturn
+    tag: latest
+    pullPolicy: Always
+  user:
+    name: user
+    password: password
+  realm: '' # turn:example.com:443
