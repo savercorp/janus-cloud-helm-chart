@@ -8,6 +8,13 @@ Janus Cloud Helm Charts
 helm repo add --username <USER_NAME> --password <TOKEN> saver https://gitlab.saver.jp/api/v4/projects/257/packages/helm/stable
 ```
 
+## Export to manifest files
+
+```bash
+helm fetch saver/janus-cloud
+helm template --output-dir <DIRECTORY> janus-cloud-<VERSION>.tgz
+```
+
 ## Install helm chart
 
 ```bash
