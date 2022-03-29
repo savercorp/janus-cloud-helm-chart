@@ -12,6 +12,10 @@ spec:
       labels:
         app: janus-gateway
     spec:
+      {{- with .Values.janusGateway.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - image: "{{ .Values.janusGateway.image.repository }}:{{ .Values.janusGateway.image.tag }}"
           imagePullPolicy: {{ .Values.janusGateway.image.pullPolicy }}
@@ -27,7 +31,7 @@ spec:
             - name: janus-sentinel
               mountPath: /opt/janus-cloud/conf/janus-sentinel.yml
               subPath: janus-sentinel.yml
-            - name: janus
+            - name: janus-gateway
               mountPath: /opt/janus/etc/janus/janus.jcfg
               subPath: janus.jcfg
       volumes:
@@ -37,9 +41,10 @@ spec:
             items:
               - key: janus-sentinel.yml
                 path: janus-sentinel.yml
-        - name: janus
+        - name: janus-gateway
           configMap:
             name: janus-gateway
             items:
               - key: janus.jcfg
                 path: janus.jcfg
+            defaultMode: 0555
