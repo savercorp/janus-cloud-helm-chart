@@ -40,6 +40,8 @@ janusProxy:
             record: false
 janusGateway:
   replicas: 3
+  minReplicas: 2
+  maxReplicas: 10
   image:
     repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-gateway
     tag: latest
@@ -48,6 +50,8 @@ janusGateway:
   initContainers: {}
 coturn:
   replicas: 3
+  minReplicas: 2
+  maxReplicas: 10
   service:
     annotations: {} # NLB info
   image:
