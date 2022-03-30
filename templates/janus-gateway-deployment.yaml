@@ -20,7 +20,10 @@ spec:
         - image: "{{ .Values.janusGateway.image.repository }}:{{ .Values.janusGateway.image.tag }}"
           imagePullPolicy: {{ .Values.janusGateway.image.pullPolicy }}
           name: janus-gateway
-          command: [{{- join "," .Values.janusGateway.command }}]
+          command:
+          {{- range .Values.janusGateway.command }}
+            - "{{ . }}"
+          {{- end }}
           resources:
             requests:
               cpu: 4
