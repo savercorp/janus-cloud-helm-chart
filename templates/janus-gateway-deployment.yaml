@@ -32,8 +32,7 @@ spec:
               mountPath: /opt/janus-cloud/conf/janus-sentinel.yml
               subPath: janus-sentinel.yml
             - name: janus-gateway
-              mountPath: /opt/janus/etc/janus/janus.jcfg
-              subPath: janus.jcfg
+              mountPath: /opt/janus/etc/janus
       volumes:
         - name: janus-sentinel
           configMap:
@@ -44,7 +43,3 @@ spec:
         - name: janus-gateway
           configMap:
             name: janus-gateway
-            items:
-              - key: janus.jcfg
-                path: janus.jcfg
-            defaultMode: 0555
