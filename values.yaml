@@ -44,6 +44,7 @@ janusGateway:
     repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-gateway
     tag: latest
     pullPolicy: Always
+  command: []
   initContainers: {}
 coturn:
   replicas: 3
