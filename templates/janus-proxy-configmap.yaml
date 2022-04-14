@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: janus-proxy
+  namespace: {{ .Values.janusProxy.namespace }}
 data:
   {{- range .Values.janusProxy.plugins }}
   janus-proxy.plugin.{{ .name | lower }}.yml: |

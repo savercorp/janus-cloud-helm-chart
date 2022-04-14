@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: coturn
+  namespace: {{ .Values.coturn.namespace }}
   {{- with .Values.coturn.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

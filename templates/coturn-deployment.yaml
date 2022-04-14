@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: coturn
+  namespace: {{ .Values.coturn.namespace }}
 spec:
   selector:
     matchLabels:
@@ -12,7 +13,6 @@ spec:
       labels:
         app: coturn
     spec:
-      #hostNetwork: true
       containers:
         - image: "{{ .Values.coturn.image.repository }}:{{ .Values.coturn.image.tag }}"
           imagePullPolicy: {{ .Values.coturn.image.pullPolicy }}

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: janus-gateway
+  namespace: {{ .Values.janusGateway.namespace }}
 data:
   janus.jcfg: |
     general: {
