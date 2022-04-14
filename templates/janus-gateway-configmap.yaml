@@ -208,6 +208,6 @@ data:
     posters:
       - post_type: "http"
         name: ""
-        post_urls: ["http://janus-proxy:8100/sentinel_callback"]
+        post_urls: ["http://janus-proxy.{{ .Values.janusProxy.namespace }}:8100/sentinel_callback"]
         expire: 60
         http_timeout: 10
