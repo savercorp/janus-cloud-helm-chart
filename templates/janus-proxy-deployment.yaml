@@ -54,7 +54,7 @@ spec:
             - name: janus-proxy-config
               mountPath: /opt/janus-cloud/conf
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.janusProxy | nindent 12 }}
       volumes:
         - name: janus-proxy-config
           configMap:

@@ -50,7 +50,7 @@ spec:
               mountPath: /opt/janus/etc/janus
               readOnly: true
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.janusGateway | nindent 12 }}
         - name: janus-sentinel
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -76,7 +76,7 @@ spec:
               subPath: janus-sentinel.yml
               readOnly: true
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.resources.janusSentinel | nindent 12 }}
       volumes:
         - name: janus-gateway-config
           configMap:
