@@ -13,10 +13,11 @@ spec:
       {{- include "janus-gateway.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/janus-gateway-configmap.yaml") . | sha256sum }}
       labels:
         {{- include "janus-gateway.selectorLabels" . | nindent 8 }}
     spec:
