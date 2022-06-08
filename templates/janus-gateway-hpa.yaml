@@ -1,13 +1,35 @@
-apiVersion: autoscaling/v1
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: janus-gateway
-  namespace: {{ .Values.janusGateway.namespace }}
+  name: {{ include "janus-gateway.fullname" . }}
+  labels:
+    {{- include "janus-gateway.labels" . | nindent 4 }}
 spec:
+  behavior:
+    scaleDown:
+      selectPolicy: Disabled
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: janus-gateway
-  minReplicas: {{ .Values.janusGateway.minReplicas }}
-  maxReplicas: {{ .Values.janusGateway.maxReplicas }}
-  targetCPUUtilizationPercentage: 80
+    name: {{ include "janus-gateway.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

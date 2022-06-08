@@ -1,60 +1,101 @@
-janusProxy:
-  namespace: default
-  host: localhost
-  ingress:
-    annotations: {} # ALB info
-  image:
+# Default values for janus-cloud.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  janusCloud:
     repository: saverops/janus-cloud
-    tag: latest
-    pullPolicy: Always
-  port: 80
-  plugins:
-    - name: EchoTest # plugin_fatory_name
-      config:
-        general: {}
-    - name: P2PCall
-      config:
-        general:
-          user_db: memory # "memory" is only supported
-    - name: VideoCall
-      config:
-        general:
-          user_db: memory # "memory" or "redis://user:secret@localhost:6379/0"
-    - name: VideoRoom
-      config:
-        general:
-          room_db: memory # "memory" or "redis://user:secret@localhost:6379/0"
-          room_auto_destroy_timeout: 0 # if not zero, the idle room would be destroyed automatically
-          admin_key: ''
-          lock_rtp_forward: false
-        backend_sweeper:
-          enable: true
-          backend_idle_room_check_interval: 600
-        rooms:
-          - room_id: 1234
-            description: Demo Room
-            secret: adminpwd
-            publishers: 6
-            bitrate: 128000
-            fir_freq: 10
-            videocodec: vp8
-            record: false
-janusGateway:
-  namespace: default
-  replicas: 1
-  minReplicas: 1
-  maxReplicas: 3
-  image:
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  janusGateway:
     repository: saverops/janus-gateway
-    tag: latest
-    pullPolicy: Always
-  command: []
-  initContainers: {}
-janusSentinel:
-  namespace: default
-  image:
-    repository: saverops/janus-cloud
-    tag: latest
-    pullPolicy: Always
-coturn:
-  fullname: coturn
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "0.10.7"
+
+imagePullSecrets: []
+nameOverride:
+  janusProxy: "janus-proxy"
+  janusGateway: "janus-gateway"
+fullnameOverride:
+  janusProxy: ""
+  janusGateway: ""
+
+serviceAccount:
+  janusProxy:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+  janusGateway:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: NodePort
+  port: 8288
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

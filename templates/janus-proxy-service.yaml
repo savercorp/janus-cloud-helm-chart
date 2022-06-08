@@ -1,18 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: janus-proxy
-  namespace: {{ .Values.janusProxy.namespace }}
+  name: {{ include "janus-proxy.fullname" . }}
+  labels:
+    {{- include "janus-proxy.labels" . | nindent 4 }}
 spec:
-  type: NodePort
+  type: {{ .Values.service.type }}
   ports:
-    - name: ws
-      port: {{ .Values.janusProxy.port }}
+    - port: {{ .Values.service.port }}
       targetPort: 8288
       protocol: TCP
-    - name: pong
-      port: 8100
+      name: ws
+    - port: 8100
       targetPort: 8100
       protocol: TCP
+      name: http
   selector:
-    app: janus-proxy
+    {{- include "janus-proxy.selectorLabels" . | nindent 4 }}

@@ -1,35 +1,73 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: janus-proxy
-  namespace: {{ .Values.janusProxy.namespace }}
+  name: {{ include "janus-proxy.fullname" . }}
+  labels:
+    {{- include "janus-proxy.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app: janus-proxy
-  replicas: 1
+      {{- include "janus-proxy.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app: janus-proxy
+        {{- include "janus-proxy.selectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "janus-proxy.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - image: "{{ .Values.janusProxy.image.repository }}:{{ .Values.janusProxy.image.tag }}"
-          imagePullPolicy: {{ .Values.janusProxy.image.pullPolicy }}
-          name: janus-proxy
+        - name: {{ include "janus-proxy.name" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.janusCloud.repository }}:{{ .Values.image.janusCloud.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.janusCloud.pullPolicy }}
           command:
             - janus-proxy
-          resources:
-            requests:
-              cpu: 2
-              memory: 4G
           ports:
-            - containerPort: 8288
-            - containerPort: 8100
+            - name: ws
+              containerPort: 8288
+              protocol: TCP
+            - name: http
+              containerPort: 8100
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: ws
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: ws
           volumeMounts:
-            - name: janus-proxy
+            - name: janus-proxy-config
               mountPath: /opt/janus-cloud/conf
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: janus-proxy
+        - name: janus-proxy-config
           configMap:
-            name: janus-proxy
+            name: {{ include "janus-proxy.fullname" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

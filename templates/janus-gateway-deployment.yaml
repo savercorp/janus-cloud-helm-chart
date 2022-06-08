@@ -1,61 +1,101 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: janus-gateway
-  namespace: {{ .Values.janusGateway.namespace }}
+  name: {{ include "janus-gateway.fullname" . }}
+  labels:
+    {{- include "janus-gateway.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app: janus-gateway
-  replicas: {{ .Values.janusGateway.replicas }}
+      {{- include "janus-gateway.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        app: janus-gateway
-    spec:
-      {{- with .Values.janusGateway.initContainers }}
-      initContainers:
+      {{- with .Values.podAnnotations }}
+      annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      labels:
+        {{- include "janus-gateway.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "janus-gateway.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - image: "{{ .Values.janusGateway.image.repository }}:{{ .Values.janusGateway.image.tag }}"
-          imagePullPolicy: {{ .Values.janusGateway.image.pullPolicy }}
-          name: janus-gateway
-          command:
-          {{- range .Values.janusGateway.command }}
-            - "{{ . }}"
-          {{- end }}
-          resources:
-            requests:
-              cpu: 2
-              memory: 4G
+        - name: {{ include "janus-gateway.name" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.janusGateway.repository }}:{{ .Values.image.janusGateway.tag }}"
+          imagePullPolicy: {{ .Values.image.janusGateway.pullPolicy }}
           ports:
-            - containerPort: 8188
+            - name: ws
+              containerPort: 8188
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: ws
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: ws
           volumeMounts:
-            - name: janus-gateway
+            - name: janus-gateway-config
               mountPath: /opt/janus/etc/janus
-        - image: "{{ .Values.janusSentinel.image.repository }}:{{ .Values.janusSentinel.image.tag }}"
-          imagePullPolicy: {{ .Values.janusSentinel.image.pullPolicy }}
-          name: janus-sentinel
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: janus-sentinel
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.janusCloud.repository }}:{{ .Values.image.janusCloud.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.janusCloud.pullPolicy }}
           command:
             - janus-sentinel
-          resources:
-            requests:
-              cpu: 1
-              memory: 2G
           ports:
-            - containerPort: 8200
+            - name: http
+              containerPort: 8200
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           volumeMounts:
-            - name: janus-sentinel
+            - name: janus-sentinel-config
               mountPath: /opt/janus-cloud/conf/janus-sentinel.yml
               subPath: janus-sentinel.yml
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-        - name: janus-sentinel
+        - name: janus-gateway-config
           configMap:
-            name: janus-gateway
+            name: {{ include "janus-gateway.fullname" . }}
+        - name: janus-sentinel-config
+          configMap:
+            name: {{ include "janus-gateway.fullname" . }}
             items:
               - key: janus-sentinel.yml
                 path: janus-sentinel.yml
-        - name: janus-gateway
-          configMap:
-            name: janus-gateway
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
