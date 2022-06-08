@@ -17,7 +17,7 @@ spec:
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        checksum/config: {{ include (print $.Template.BasePath "/janus-gateway-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/janus-gateway-secret.yaml") . | sha256sum }}
       labels:
         {{- include "janus-gateway.selectorLabels" . | nindent 8 }}
     spec:
@@ -80,11 +80,11 @@ spec:
             {{- toYaml .Values.resources.janusSentinel | nindent 12 }}
       volumes:
         - name: janus-gateway-config
-          configMap:
-            name: {{ include "janus-gateway.fullname" . }}
+          secret:
+            secretName: {{ include "janus-gateway.fullname" . }}
         - name: janus-sentinel-config
-          configMap:
-            name: {{ include "janus-gateway.fullname" . }}
+          secret:
+            secretName: {{ include "janus-gateway.fullname" . }}
             items:
               - key: janus-sentinel.yml
                 path: janus-sentinel.yml
