@@ -1,0 +1,6 @@
+dependencies:
+- name: coturn
+  repository: https://savercorp.github.io/helm-charts
+  version: 0.0.1
+digest: sha256:c9e075432c1e85a8fbecca4da7142ffb37735524c6035422752add333a02062b
+generated: "2022-06-06T19:57:49.267978+09:00"

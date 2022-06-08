@@ -1,13 +1,13 @@
 janusProxy:
   namespace: default
-  host: example.com
+  host: localhost
   ingress:
     annotations: {} # ALB info
   image:
-    repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-proxy
+    repository: saverops/janus-cloud
     tag: latest
     pullPolicy: Always
-  port: 443
+  port: 80
   plugins:
     - name: EchoTest # plugin_fatory_name
       config:
@@ -24,7 +24,7 @@ janusProxy:
       config:
         general:
           room_db: memory # "memory" or "redis://user:secret@localhost:6379/0"
-          room_auto_destroy_timeout: 5000 # if not zero, the idle room would be destroyed automatically
+          room_auto_destroy_timeout: 0 # if not zero, the idle room would be destroyed automatically
           admin_key: ''
           lock_rtp_forward: false
         backend_sweeper:
@@ -41,27 +41,20 @@ janusProxy:
             record: false
 janusGateway:
   namespace: default
-  replicas: 3
-  minReplicas: 2
-  maxReplicas: 10
+  replicas: 1
+  minReplicas: 1
+  maxReplicas: 3
   image:
-    repository: registry.gitlab.saver.jp/saver/container/janus-cloud/janus-gateway
+    repository: saverops/janus-gateway
     tag: latest
     pullPolicy: Always
   command: []
   initContainers: {}
-coturn:
+janusSentinel:
   namespace: default
-  replicas: 3
-  minReplicas: 2
-  maxReplicas: 10
-  service:
-    annotations: {} # NLB info
   image:
-    repository: coturn/coturn
+    repository: saverops/janus-cloud
     tag: latest
     pullPolicy: Always
-  user:
-    name: user
-    password: password
-  realm: '' # turn:example.com:443
+coturn:
+  fullname: coturn

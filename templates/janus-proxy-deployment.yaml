@@ -17,6 +17,8 @@ spec:
         - image: "{{ .Values.janusProxy.image.repository }}:{{ .Values.janusProxy.image.tag }}"
           imagePullPolicy: {{ .Values.janusProxy.image.pullPolicy }}
           name: janus-proxy
+          command:
+            - janus-proxy
           resources:
             requests:
               cpu: 2

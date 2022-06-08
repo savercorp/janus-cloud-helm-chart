@@ -28,16 +28,27 @@ spec:
           resources:
             requests:
               cpu: 2
-              memory: 8G
+              memory: 4G
+          ports:
+            - containerPort: 8188
+          volumeMounts:
+            - name: janus-gateway
+              mountPath: /opt/janus/etc/janus
+        - image: "{{ .Values.janusSentinel.image.repository }}:{{ .Values.janusSentinel.image.tag }}"
+          imagePullPolicy: {{ .Values.janusSentinel.image.pullPolicy }}
+          name: janus-sentinel
+          command:
+            - janus-sentinel
+          resources:
+            requests:
+              cpu: 1
+              memory: 2G
           ports:
             - containerPort: 8200
-            - containerPort: 8188
           volumeMounts:
             - name: janus-sentinel
               mountPath: /opt/janus-cloud/conf/janus-sentinel.yml
               subPath: janus-sentinel.yml
-            - name: janus-gateway
-              mountPath: /opt/janus/etc/janus
       volumes:
         - name: janus-sentinel
           configMap:

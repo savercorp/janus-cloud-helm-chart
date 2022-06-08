@@ -11,7 +11,6 @@ data:
       transports_folder = "/opt/janus/lib/janus/transports"
       events_folder = "/opt/janus/lib/janus/events"
       loggers_folder = "/opt/janus/lib/janus/loggers"
-      log_to_file = "/var/log/janus.log"
       debug_level = 4
       admin_secret = "janusoverlord"
       protected_folders = [
@@ -38,13 +37,13 @@ data:
       ]
     }
     nat: {
-      stun_server = "coturn"
-      stun_port = 443
+      stun_server = "{{ .Release.Name }}-coturn"
+      stun_port = 3478
       nice_debug = false
-      turn_server = "coturn"
-      turn_port = 443
-      turn_user = "{{ .Values.coturn.user.name }}"
-      turn_pwd = "{{ .Values.coturn.user.password }}"
+      turn_server = "{{ .Release.Name }}-coturn"
+      stun_port = 3478
+      turn_user = "user"
+      turn_pwd = "password"
       ice_ignore_list = "vmnet"
     }
     plugins: {}
@@ -198,7 +197,6 @@ data:
       poll_interval: 1
     log:
       log_to_stdout: true
-      log_to_file: "/var/log/janus-sentinel.log"
       debug_level: "DEBUG"
       log_file_size: 10485760
       log_file_rotate: 10

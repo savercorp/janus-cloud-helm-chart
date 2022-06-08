@@ -7,10 +7,6 @@ spec:
   type: NodePort
   ports:
     - name: ws
-      port: 80
-      targetPort: 8288
-      protocol: TCP
-    - name: wss
       port: {{ .Values.janusProxy.port }}
       targetPort: 8288
       protocol: TCP
