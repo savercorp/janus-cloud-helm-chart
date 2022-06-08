@@ -9,9 +9,10 @@ This project is made to run Janus Cloud on Kubernetes.
 
 ## Prerequisites
 
+- [Helm](https://helm.sh) is installed
 - ingress-controller is installed
 
-If you are using Docker Desktop, you can install ingress-controller by following [quick start](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start).
+If you are using Docker Desktop, you can install ingress-nginx as ingress-controller by following [quick start](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start).
 
 ```bash
 helm upgrade --install ingress-nginx ingress-nginx \
