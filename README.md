@@ -18,8 +18,7 @@ helm upgrade --install ingress-nginx ingress-nginx \
 
 ```bash
 helm repo add saver https://savercorp.github.io/helm-charts
-helm dependency update
-helm install -n <NAMESPACE> -f values.yaml --generate-name saver/janus-cloud
+helm install janus-cloud saver/janus-cloud
 ```
 
 ## Export to manifest files
