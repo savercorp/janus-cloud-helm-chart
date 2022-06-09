@@ -115,6 +115,10 @@ tolerations: []
 
 affinity: {}
 
+# SubChart
+coturn:
+  enabled: true
+
 config:
   janus: |
     general: {
