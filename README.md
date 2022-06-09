@@ -9,12 +9,16 @@ This helm chart is made to run Janus Cloud on Kubernetes.
 
 ## Ecosystem
 
-This helm chart depends on two docker images:
+### Docker Image
 
 - [saverops/janus-cloud](https://hub.docker.com/r/saverops/janus-cloud)
 - [saverops/janus-gateway](https://hub.docker.com/r/saverops/janus-gateway)
 
 ![package-diagram](./package-diagram.svg)
+
+### Sub Chart
+
+- [savercorp/coturn-helm-chart](https://github.com/savercorp/coturn-helm-chart)
 
 ## Prerequisites
 
