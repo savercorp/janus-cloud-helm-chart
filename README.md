@@ -1,11 +1,20 @@
-# janus-cloud-helm
+# janus-cloud-helm-chart
 
 [Janus Cloud](https://github.com/OpenSight/janus-cloud) brings you scalablity of [Janus Gateway](https://janus.conf.meetecho.com).  
-This project is made to run Janus Cloud on Kubernetes.
+This helm chart is made to run Janus Cloud on Kubernetes.
 
 ## System Composition
 
 ![deployment diagram](./deployment-diagram.svg)
+
+## Ecosystem
+
+This helm chart depends on two docker images:
+
+- [saverops/janus-cloud](https://hub.docker.com/r/saverops/janus-cloud)
+- [saverops/janus-gateway](https://hub.docker.com/r/saverops/janus-gateway)
+
+![package-diagram](./package-diagram.svg)
 
 ## Prerequisites
 
