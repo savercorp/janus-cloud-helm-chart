@@ -48,3 +48,7 @@ Or step by step:
 helm repo add saver https://savercorp.github.io/helm-charts
 helm install janus-cloud saver/janus-cloud
 ```
+
+## Contributing
+
+Please read through our [contributing guidelines](/CONTRIBUTING.md).
